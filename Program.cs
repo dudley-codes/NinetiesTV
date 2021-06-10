@@ -64,107 +64,133 @@ namespace NinetiesTV
     // 4. Return a list of shows whose title contains an & character.
     static List<Show> ShowsWithAmpersand(List<Show> shows)
     {
+      List<Show> hasAmpersand = (
+        from s in shows
+        where s.Name.Contains("&")
+        select s
+      ).ToList();
 
+      return hasAmpersand;
     }
 
     // 5. Return the most recent year that any of the shows aired.
     static int MostRecentYear(List<Show> shows)
     {
-      throw new NotImplementedException();
+      return shows.Max(s => s.EndYear);
     }
 
     // 6. Return the average IMDB rating for all the shows.
     static double AverageRating(List<Show> shows)
     {
-      throw new NotImplementedException();
+      return shows.Average(s => s.ImdbRating);
     }
 
     // 7. Return the shows that started and ended in the 90s.
     static List<Show> OnlyInNineties(List<Show> shows)
     {
-      throw new NotImplementedException();
+      return shows.Where(s => s.StartYear >= 1990 & s.EndYear <= 1999).ToList();
     }
 
     // 8. Return the top three highest rated shows.
     static List<Show> TopThreeByRating(List<Show> shows)
     {
-      throw new NotImplementedException();
+      return shows.Take(3).OrderByDescending(s => s.ImdbRating).ToList();
     }
 
     // 9. Return the shows whose name starts with the word "The".
     static List<Show> TheShows(List<Show> shows)
     {
-      throw new NotImplementedException();
+      return (
+        from s in shows
+        where s.Name.StartsWith("The")
+        select s).ToList();
     }
 
     // 10. Return all shows except for the lowest rated show.
     static List<Show> AllButWorst(List<Show> shows)
     {
-      throw new NotImplementedException();
+      return shows.OrderBy(s => s.ImdbRating).Skip(1).ToList();
     }
 
     // 11. Return the names of the shows that had fewer than 100 episodes.
     static List<string> FewEpisodes(List<Show> shows)
     {
-      throw new NotImplementedException();
+      return (
+        from s in shows
+        where s.EpisodeCount < 100
+        select s.Name
+      ).ToList();
     }
 
     // 12. Return all shows ordered by the number of years on air.
     //     Assume the number of years between the start and end years is the number of years the show was on.
     static List<Show> ShowsByDuration(List<Show> shows)
     {
-      throw new NotImplementedException();
+      return shows.OrderByDescending(s => s.EndYear - s.StartYear).ToList();
     }
 
     // 13. Return the names of the comedy shows sorted by IMDB rating.
     static List<string> ComediesByRating(List<Show> shows)
     {
-      throw new NotImplementedException();
+      return (
+        from s in shows.OrderByDescending(s => s.ImdbRating).ToList()
+        where s.Genres.Contains("Comedy")
+        select s.Name
+      ).ToList();
+      // return shows.Select(s =>  if(s.Genres.Contains("comedy")){ s }).ToList();
+
+      // return shows.Select(s => s.Name).OrderBy(s => s).ToList();
     }
 
     // 14. Return the shows with more than one genre ordered by their starting year.
     static List<Show> WithMultipleGenresByStartYear(List<Show> shows)
     {
-      throw new NotImplementedException();
+      return (
+        from s in shows.OrderByDescending(s => s.StartYear).ToList()
+        where s.Genres.Count > 1
+        select s
+      ).ToList();
     }
 
     // 15. Return the show with the most episodes.
     static Show MostEpisodes(List<Show> shows)
     {
-      throw new NotImplementedException();
+      int maxEpisodes = shows.Max(s => s.EpisodeCount);
+      return shows.FirstOrDefault(s => s.EpisodeCount == maxEpisodes);
     }
-
     // 16. Order the shows by their ending year then return the first 
     //     show that ended on or after the year 2000.
     static Show EndedFirstAfterTheMillennium(List<Show> shows)
     {
-      throw new NotImplementedException();
+
+      return shows.OrderBy(s => s.EndYear).ToList().FirstOrDefault(s => s.EndYear >= 2000);
+
     }
 
     // 17. Order the shows by rating (highest first) 
     //     and return the first show with genre of drama.
     static Show BestDrama(List<Show> shows)
     {
-      throw new NotImplementedException();
+      return shows.OrderByDescending(s => s.ImdbRating).ToList().FirstOrDefault(s => s.Genres.Contains("Drama"));
     }
 
     // 18. Return all dramas except for the highest rated.
     static List<Show> AllButBestDrama(List<Show> shows)
     {
-      throw new NotImplementedException();
+      return shows.OrderByDescending(s => s.ImdbRating).Where(s => s.Genres.Contains("Drama")).Skip(1).ToList();
     }
 
     // 19. Return the number of crime shows with an IMDB rating greater than 7.0.
     static int GoodCrimeShows(List<Show> shows)
     {
-      throw new NotImplementedException();
+      return shows.Where(s => s.Genres.Contains("Crime") & s.ImdbRating > 7).Count();
     }
 
     // 20. Return the first show that ran for more than 10 years 
     //     with an IMDB rating of less than 8.0 ordered alphabetically.
     static Show FirstLongRunningTopRated(List<Show> shows)
     {
-      throw new NotImplementedException();
+      return shows.Where(s => s.EndYear - s.StartYear > 10 & s.ImdbRating < 8).OrderByDescending(s => s.Name).ToList().FirstOrDefault();
     }
 
     // 21. Return the show with the most words in the name.
@@ -187,10 +213,10 @@ namespace NinetiesTV
 
 
     /**************************************************************************************************
-     CHALLENGES
+    CHALLENGES
 
-     These challenges are very difficult and may require you to research LINQ methods that we haven't
-     talked about. Such as:
+    These challenges are very difficult and may require you to research LINQ methods that we haven't
+    talked about. Such as:
 
         GroupBy()
         SelectMany()
@@ -207,7 +233,7 @@ namespace NinetiesTV
 
 
     /**************************************************************************************************
-     There is no code to write or change below this line, but you might want to read it.
+    There is no code to write or change below this line, but you might want to read it.
     **************************************************************************************************/
 
     static void Print(string title, List<Show> shows)
